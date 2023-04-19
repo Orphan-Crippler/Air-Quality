@@ -8,7 +8,7 @@ np2 = neopixel.NeoPixel(machine.Pin(2), 8)
 # setup I2C for display
 i2c0 = I2C(0, sda=Pin(16), scl=Pin(17))
 utime.sleep_ms(100)
-display = ssd1306.SSD1306_I2C(128, 32, i2c0)
+display = ssd1306.SSD1306_I2C(128, 64, i2c0)
 
 # setup I2C for sensor
 i2c1 = I2C(1, sda=Pin(18), scl=Pin(19))
@@ -18,7 +18,7 @@ voc.setup()
 # Splash/Loading Screen & LED Test. Not neccesary but looks nice.
 def splash():
     display.text('Air Quality Mon', 0, 0)
-    display.text('    Loading', 0, 12)
+    display.text('    Loading', 0, 18)
     display.show()
 
     range = [0,1,2,3,4,5,6,7]
@@ -27,7 +27,7 @@ def splash():
         np2[i] = (255, 0, 0)
         np.write()
         np2.write()
-        display.text('%' * i, 0, 24)
+        display.text('%' * i, 0, 28)
         display.show()
         utime.sleep_ms(250)
     
@@ -38,7 +38,7 @@ def splash():
         np2[i] = (0, 255, 0)
         np.write()
         np2.write()
-        display.text('%' * prog, 0, 24)
+        display.text('%' * prog, 0, 28)
         display.show()
         prog += 1
         utime.sleep_ms(250)
@@ -53,11 +53,10 @@ def splash():
         display.fill(0)
         display.show()
         display.text('Air Quality Mon', 0, 0)
-        display.text('    Loading', 0, 12)
-        display.text('%' * prog2, 0, 24)
+        display.text('    Loading', 0, 18)
+        display.text('%' * prog2, 0, 28)
         display.show()
         prog2 -= 2
-        print(str(prog2))
         utime.sleep_ms(250)
 
 """
@@ -77,7 +76,6 @@ def chkTVOC():
     global line1
     global r
     if r[1] <= 220:
-        line1 = '   A.O.K.'
         range = [0,1,2,3,4,5,6,7]
         for i in range:
             np[i] = (0, 255, 0)
@@ -98,7 +96,7 @@ def chkTVOC():
         utime.sleep(2)
         
 def chkCo2():
-    global line1
+    global line2
     global r
     if r[0] <= 600:
         range = [0,1,2,3,4,5,6,7]
@@ -111,14 +109,14 @@ def chkCo2():
             np2[i] = (255, 168, 0)
             np2.write()
     elif r[0] >= 1001 <= 1500:
-        line1 = 'Co2 VENT!!!'
+        line2 = 'Co2 VENT!!!'
         range = [0,1,2,3,4,5,6,7]
         for i in range:
             np2[i] = (255, 25, 0)
             np2.write()
         utime.sleep(2)
     if r[0] >= 1501:
-        line1 = 'Co2 EVACUATE!'
+        line2 = 'Co2 EVACUATE!'
         range = [0,1,2,3,4,5,6,7]
         for i in range:
             np2[i] = (255, 0, 0)
@@ -129,7 +127,9 @@ splash()
 # Loop
 while True:
     global line1
+    global line2
     line1 = ''
+    line2 = ''
     
     if voc.data_available():
         global r
@@ -141,9 +141,10 @@ while True:
         
         display.fill(0)
         display.show()   
-        display.text(line1, 0, 0)
-        display.text('Co2:' + str(r[0]) + 'ppm', 0, 12)
-        display.text('TVOC:' + str(r[1]) + 'ppb', 0, 24)
+        display.text('Co2:' + str(r[0]) + 'ppm', 0, 0)
+        display.text(line2, 0, 8)
+        display.text('TVOC:' + str(r[1]) + 'ppb', 0, 48)
+        display.text(line1, 0, 56)
         display.show()
         utime.sleep(1)
     else:
