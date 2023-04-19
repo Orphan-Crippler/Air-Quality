@@ -17,8 +17,9 @@ voc.setup()
 
 # Splash/Loading Screen & LED Test. Not neccesary but looks nice.
 def splash():
-    display.text('Air Quality Mon', 0, 0)
-    display.text('    Loading', 0, 18)
+    display.text('Air Quality', 0, 0)
+    display.text('        Monitor', 0, 8)
+    display.text('    Loading', 0, 16)
     display.show()
 
     range = [0,1,2,3,4,5,6,7]
@@ -27,7 +28,7 @@ def splash():
         np2[i] = (255, 0, 0)
         np.write()
         np2.write()
-        display.text('%' * i, 0, 28)
+        display.text('%' * i, 0, 24)
         display.show()
         utime.sleep_ms(250)
     
@@ -38,7 +39,7 @@ def splash():
         np2[i] = (0, 255, 0)
         np.write()
         np2.write()
-        display.text('%' * prog, 0, 28)
+        display.text('%' * prog, 0, 24)
         display.show()
         prog += 1
         utime.sleep_ms(250)
@@ -52,9 +53,10 @@ def splash():
         np2.write()
         display.fill(0)
         display.show()
-        display.text('Air Quality Mon', 0, 0)
-        display.text('    Loading', 0, 18)
-        display.text('%' * prog2, 0, 28)
+        display.text('Air Quality', 0, 0)
+        display.text('        Monitor', 0, 8)
+        display.text('    Loading', 0, 16)
+        display.text('%' * prog2, 0, 24)
         display.show()
         prog2 -= 2
         utime.sleep_ms(250)
@@ -81,7 +83,7 @@ def chkTVOC():
             np[i] = (0, 255, 0)
             np.write()
     elif r[1] >= 221 <= 660:
-        line1 = 'Ventilation'
+        line1 = 'Ventilation!!'
         range = [0,1,2,3,4,5,6,7]
         for i in range:
             np[i] = (255, 25, 0)
@@ -109,14 +111,14 @@ def chkCo2():
             np2[i] = (255, 168, 0)
             np2.write()
     elif r[0] >= 1001 <= 1500:
-        line2 = 'Co2 VENT!!!'
+        line2 = 'Ventilation!!'
         range = [0,1,2,3,4,5,6,7]
         for i in range:
             np2[i] = (255, 25, 0)
             np2.write()
         utime.sleep(2)
     if r[0] >= 1501:
-        line2 = 'Co2 EVACUATE!'
+        line2 = 'Co2 EVACUATE!!'
         range = [0,1,2,3,4,5,6,7]
         for i in range:
             np2[i] = (255, 0, 0)
@@ -140,9 +142,11 @@ while True:
         chkTVOC()
         
         display.fill(0)
-        display.show()   
-        display.text('Co2:' + str(r[0]) + 'ppm', 0, 0)
-        display.text(line2, 0, 8)
+        display.show()
+        display.text('Air Quality', 0, 0)
+        display.text('        Monitor', 0, 8)
+        display.text('Co2:' + str(r[0]) + 'ppm', 0, 16)
+        display.text(line2, 0, 24)
         display.text('TVOC:' + str(r[1]) + 'ppb', 0, 48)
         display.text(line1, 0, 56)
         display.show()
